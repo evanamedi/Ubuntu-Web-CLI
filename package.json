@@ -1,0 +1,23 @@
+{
+	"name": "cli",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon server.js",
+		"watch:server": "nodemon server.js",
+		"watch:css": "postcss ./src/index.css -o ./src/output.css -w",
+		"watch": "npm-run-all --parallel watch:*"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"cookie-parser": "^1.4.6",
+		"dockerode": "^4.0.2",
+		"express": "^4.19.2",
+		"express-ws": "^5.0.2",
+		"nodemon": "^3.1.0",
+		"uuid": "^9.0.1"
+	}
+}

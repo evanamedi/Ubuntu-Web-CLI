@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Login</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<h2>Login</h2>
+		<form id="login-form">
+			<label for="username">Username:</label><br />
+			<input
+				type="text"
+				id="username"
+				name="username"
+				required /><br />
+			<label for="password">Password:</label><br />
+			<input
+				type="password"
+				id="password"
+				name="password"
+				required /><br />
+			<input type="submit" value="Login" />
+		</form>
+		<div id="error-message" style="color: red"></div>
+		<div>
+			<a href="register.html">Register</a>
+		</div>
+		<script>
+			$("#login-form").on("submit", function (event) {
+				event.preventDefault();
+				$.post("/login", $(this).serialize())
+					.done(function () {
+						window.location.href = "/index";
+					})
+					.fail(function (jqXHR) {
+						$("#error-message").text(jqXHR.responseText);
+					});
+			});
+		</script>
+	</body>
+</html>

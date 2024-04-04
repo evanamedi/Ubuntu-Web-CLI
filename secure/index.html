@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Docker Management</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<button id="start">Start Container</button>
+		<button id="stop">Stop Container</button>
+		<button id="restart">Restart Container</button>
+		<form id="exec-form">
+			<input type="text" id="command" placeholder="Enter command" />
+			<button type="submit">Execute Command</button>
+		</form>
+		<div id="output"></div>
+
+		<script>
+			// terminal class
+			class DockerTerminal {
+				constructor() {
+					this.ws = new WebSocket(
+						"ws://localhost:5000/terminal"
+					); // create new websocket connection
+					this.decoder = new TextDecoder("utf-8", {
+						stream: true,
+					}); // create new TextDecoder
+					this.outputElement = document.getElementById("output"); // gets output element
+					this.setupEventHandlers(); // set up event handlers
+				}
+
+				// current attempt to clean up output
+				cleanOutput(output) {
+					//let line = "";
+					//for (let cmd in output) {
+					//	line += output[cmd] + " ";
+					//}
+					return output;
+				}
+				// method to fetch data and update output
+				fetchAndUpdateOutput(url) {
+					fetch(url, {
+						method: "GET",
+						credentials: "same-origin",
+					})
+						.then((response) => response.text())
+						.then((data) => {
+							this.outputElement.innerHTML +=
+								"<p>" + data + "</p>";
+						});
+				}
+
+				// method for setting up event handlers
+				setupEventHandlers() {
+					// event handler for when WebSocket connection is good
+					this.ws.onopen = () => {
+						console.log("WebSocket Client Connected");
+						document
+							.getElementById("start")
+							.addEventListener("click", () => {
+								this.fetchAndUpdateOutput("/start");
+							}); // adds event listener to start button, then fetches data and updates output when clicked
+					};
+
+					// event handler for when a message is received form WebSocket
+					this.ws.onmessage = (e) => {
+						console.log("Received data type:", typeof e.data);
+						// if data is a string
+						if (typeof e.data === "string") {
+							try {
+								const message = JSON.parse(e.data); // parse data as JSON
+								console.log(message);
+								// if message has a clientId property
+								if (message.clientId) {
+									document.cookie = `clientId = ${message.clientId}`; // set a cookie with the clientId
+									// if message doesn't not have a clientId property
+								} else {
+									this.outputElement.innerHTML = message;
+								}
+								// if error occurs while parsing data
+							} catch (error) {
+								this.outputElement.innerHTML = e.data;
+							}
+							// if data is an ArrayBuffer
+						} else if (e.data instanceof ArrayBuffer) {
+							console.log(e.data);
+							const text = this.decoder.decode(e.data); // decodes data
+							console.log("Decoded text:", text);
+							const cleanText = this.cleanOutput(text); // cleans output
+							this.outputElement.innerHTML +=
+								cleanText + "<br>"; // add cleaned output to output element
+						} else {
+							console.error(
+								"Received data is not a string or an ArrayBuffer"
+							); // if data is not a string or ArrayBuffer, log an error to console
+						}
+					};
+
+					// stop button event listener
+					document
+						.getElementById("stop")
+						.addEventListener("click", () => {
+							this.fetchAndUpdateOutput("/stop");
+						});
+
+					// restart button event listener
+					document
+						.getElementById("restart")
+						.addEventListener("click", () => {
+							this.fetchAndUpdateOutput("/restart");
+						});
+
+					// form submission event listener
+					document
+						.getElementById("exec-form")
+						.addEventListener("submit", (e) => {
+							e.preventDefault();
+							const command =
+								document.getElementById("command").value; // get command from input field
+							this.ws.send(
+								JSON.stringify({ command: command })
+							); // send command to WebSocket
+							document.getElementById("command").value = ""; // clear input field
+						});
+				}
+			}
+
+			const dockerTerminal = new DockerTerminal(); // create a new DockerTerminal
+		</script>
+	</body>
+</html>

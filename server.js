@@ -1,5 +1,6 @@
 // import necessary modules
 const express = require("express"); // express for creating server
+const cors = require("cors");
 const { PORT } = require("./config");
 const passport = require("passport");
 const mongoose = require("mongoose");
@@ -19,6 +20,7 @@ mongoose.connect(config.MONGO_URI);
 
 const app = express(); // create a new express application
 
+app.use(cors());
 app.use(express.json()); // JSON middleware
 app.use(cookieParser()); // cookie parsing middleware
 app.use(express.urlencoded({ extended: true }));

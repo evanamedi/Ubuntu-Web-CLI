@@ -8,13 +8,13 @@ const Docker = require("dockerode"); // Dockerode for interacting with Docker
 const cookieParser = require("cookie-parser"); // cookie-parser for parsing cookies
 const { v4: uuidv4 } = require("uuid"); // uuid for generating unique client IDs
 const session = require("express-session");
-const setupWebSocket = require("./websocket"); // WebSocket setup function
+const setupWebSocket = require("../websocket"); // WebSocket setup function
 const {
 	startContainer,
 	stopContainer,
 	restartContainer,
 	execCommand,
-} = require("./dockerService"); // Docker service functions
+} = require("../dockerService"); // Docker service functions
 
 mongoose.connect("mongodb://localhost/cli_db");
 

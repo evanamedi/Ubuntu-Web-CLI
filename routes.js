@@ -2,8 +2,8 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("./models/user.js");
 const passport = require("passport");
-const { clients, docker } = require("./context.js");
-
+const { clients, docker } = require("./utils/context.js");
+const path = require("path");
 const router = express.Router();
 const {
 	startContainer,
@@ -16,12 +16,14 @@ const {
 	ensureUnauthenticated,
 } = require("./middleware/auth.js");
 
+// no longer serve old HTML files
+// redirect login and register routes to the react app
 router.get("/login", ensureUnauthenticated, (req, res) => {
-	res.sendFile(__dirname + "/public/login.html");
+	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 router.get("/register", ensureUnauthenticated, (req, res) => {
-	res.sendFile(__dirname + "/public/register.html");
+	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 router.post("/register", async function (req, res) {
@@ -58,12 +60,14 @@ router.post("/login", function (req, res, next) {
 	})(req, res, next);
 });
 
+// no longer serve old HTML files
 router.get("/index", ensureAuthenticated, (req, res) => {
-	res.sendFile(__dirname + "/secure/index.html");
+	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+// redirect root to the React app
 router.get("/", (req, res) => {
-	res.redirect("/index");
+	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 // route for starting a container

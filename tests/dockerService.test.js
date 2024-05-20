@@ -5,7 +5,7 @@ const {
 	stopContainer,
 	restartContainer,
 	execCommand,
-} = require("./dockerService");
+} = require("../dockerService");
 
 jest.mock("dockerode"); // mock docker module
 

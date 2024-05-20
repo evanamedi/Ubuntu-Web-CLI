@@ -1,4 +1,5 @@
-const log = require("./logging");
+// import logging utility for logging messages
+const log = require("./utils/logging");
 
 module.exports = {
 	// define GET endpoint for starting a new Docker container
@@ -27,10 +28,9 @@ module.exports = {
 				OpenStdin: true,
 			});
 
-			// start Docker container
-			await container.start();
-			// store the container ID in the client object
-			client.containerId = container.id;
+			await container.start(); // start Docker container
+			client.containerId = container.id; // store the container ID in the client object
+
 			// attach to Docker container
 			const stream = await container.attach({
 				stream: true,
@@ -59,8 +59,7 @@ module.exports = {
 			next(err); // pass any errors to next middleware
 		}
 	},
-	//
-	//
+
 	// define GET endpoint for stopping a Docker container
 	stopContainer: async function (clients, docker, req, res, next) {
 		const clientId = req.cookies["clientId"]; // retrieve the client ID from cookies - yum
@@ -95,8 +94,7 @@ module.exports = {
 		// check if client objet and container ID do not exist
 		if (!client || !client.containerId) {
 			log("No container to restart", "warning");
-			// if true, send error response
-			res.status(400).send("No container to restart");
+			res.status(400).send("No container to restart"); // if true, send error response
 			return;
 		}
 
@@ -111,8 +109,7 @@ module.exports = {
 			next(err); // pass any errors to the next middleware
 		}
 	},
-	//
-	//
+
 	// define a POST endpoint for executing a command in docker container
 	execCommand: async function (clients, docker, req, res, next) {
 		const clientId = req.cookies["clientId"]; // retrieve the client ID from cookies

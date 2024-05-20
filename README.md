@@ -1,61 +1,77 @@
-# Ubuntu-Web-CLI
+# Ubuntu-Web-Terminal
 
-## server.js
+This repository contains an Express.js server setup with WebSocket support, user authentication, session management, and static file serving for a React application.
 
-this is setting up an express server with websocket support to interact with docker containers.
+## Features
 
-imported modules include express for server creation, express-ws for websocket support, dockerode for docker interaction, cookie-parser for parsing cookies, uuid for generating unique client IDs, and docker service functions
+-   **Express Server**: Provides the foundation for handling HTTP requests.
+-   **WebSocket Support**: Enables real-time communication using WebSockets.
+-   **Authentication**: Integrates Passport.js for handling user authentication.
+-   **Session Management**: Utilizes Express Session for managing user sessions.
+-   **MongoDB Connection**: Connects to a MongoDB database using Mongoose.
+-   **CORS**: Supports Cross-Origin Resource Sharing.
+-   **Static File Serving**: Serves static files from a React app's build directory.
+-   **Error Handling**: Middleware for logging errors and sending error responses.
 
-an express application and docker object are created
+## Setup and Usage
 
-port number is set, and defaulting to 5000 if no environment variable is provided
+### Prerequisites
 
-Map object clients is created to store client information
+-   Node.js
+-   MongoDB
+-   Environment variables: `SESSION_SECRET`, `MONGO_URI`, and `PORT`.
 
-websocket support is enables for the application
+### Installation
 
-middleware functions are created for JSON parsing, serving static files from the public directory, and cookie parsing
+1. Clone the repository:
+    ```bash
+    git clone <repository-url>
+    ```
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Set up environment variables in a `.env` file:
+    ```
+    SESSION_SECRET=your_session_secret
+    MONGO_URI=your_mongo_uri
+    PORT=your_port
+    ```
 
-routes defined for starting, stopping, restarting docker containers, and executing commands to the container. these are used in the dockerService functions
+### Running the Server
 
-websocket server is set up
+1. Start the MongoDB server.
+2. Start the Express server:
+    ```bash
+    npm start
+    ```
 
-error handling middleware is defined to log errors and send error response
+The server will be running at `http://localhost:<PORT>`.
 
-express server is started and listens on the specified port
+## Code Overview
 
-the express app, uuid generation function, clients map, and docker object are exported for use in other modules
+-   **Server Setup**: The main server setup is in the `server.js` file.
+-   **WebSocket Configuration**: WebSocket setup is handled in the `websocket.js` file.
+-   **Routes and Middleware**: Routes are imported from the `routes` directory and middleware is configured for sessions, cookies, and authentication.
+-   **Static Files**: The server is configured to serve static files from the React app's build directory.
 
-## websocket.js
+### Key Files
 
-this sets up a websocket server endpoint for a docker terminal
+-   `server.js`: Main server configuration.
+-   `websocket.js`: WebSocket setup function.
+-   `routes/`: Directory containing route definitions.
+-   `middleware/auth.js`: Authentication middleware.
+-   `config.js`: Configuration file for environment variables.
+-   `context.js`: Context setup for shared resources like clients and Docker.
 
-the strip-ansi module is imported asynchronously- this module is used to remove ANSI escape codes from strings
+### Error Handling
 
-the function setupWebSocket is exported. this function takes four arguments: the express application (app), the uuid generation function (uuid4), the Map of clients (clients), and the docker object (docker)
+The server includes error handling middleware to log errors and respond with a message.
 
-inside the setupWebSocket function, the endpoint for /terminal is defined. when a socket connection is established, a unique client ID is generated, a new client object is created and stored in the clients map, and the client id is sent to the client
+## Contribution
 
-an event handler is defined for incoming socket messages. if the message is a string, it is logged and parsed as JSON to extract a command. if the message cannot be parsed, and error is logged and the function returns
+Feel free to fork the repository and make pull requests. For major changes, please open an issue first to discuss what you would like to change.
 
-if the client has a container running, the command is sent to the containers exec instance. if the command includes 'rm', an error message is sent to the client and the function returns
+## License
 
-if the client does not have an exec instance, one is created and started, and an event handler is defined for data from the output steam. the data is cleaned, split into two parts and send to the client
-
-if an error occurs while sending the command or creating the exec instance, the error is logged and sent to the client
-
-if the message is not a string, it is sent to the client as binary data
-
-an event handler is defined for the websocket close event. if the client has a docker container, the container is stopped. the client is then removed from the clients map
-
-## dockerService.js
-
-this exports a set of functions for interacting with docker containers
-
-startContainer: this function starts a new docker container for a client. it retrieves the client ID from cookies, checks if the client exists, and if so, creates and starts a docker container with a specific image and configuration. it attaches to the container's output streams and sends any data from these streams to the client via the websocket connection. if successful, it sends a success response; otherwise, it passes any errors to the next middleware
-
-stopContainer: this function stops a docker container for a client. it retrieves the client ID from cookies, checks if the client and its container exists, and if so, stops the container. if successful, it sends a success response; otherwise; it passes any errors to the next middleware
-
-restartContainer: this function restarts a docker container for a client. it retrieves the client ID from cookies, checks if the client and its container exist, and if so, restarts the container. if successful, it sends a success response; otherwise, is passes any errors to the next middleware
-
-execCommand: this function executes a command in a docker container for a client. it retrieves the client ID from cookies, checks if the client and its container exist, and if the command is a string. if all checks pass, it creates a new exec instance in the container with the command, starts the exec instance, and sends any data from the output stream to the client. if successful, it sends the response; otherwise, it passes any errors to the next middleware.
+This project is licensed under the MIT License.

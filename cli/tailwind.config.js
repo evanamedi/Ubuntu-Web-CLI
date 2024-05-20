@@ -73,6 +73,11 @@ module.exports = {
 				egg: "#D6CEB5",
 				carr: "#377076",
 				orange: "#724A2B",
+				ubun: "#301428",
+				vi: "#7C2646",
+				or: "#BD5030",
+				grayy: "#444340",
+				grayylight: "#5E6052",
 			},
 			fontFamily: {
 				bebas: ["Bebas_Neue", "sans-serif"],

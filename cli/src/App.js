@@ -7,7 +7,7 @@ import Register from "./components/Register";
 function App() {
 	return (
 		<Router>
-			<div className="App">
+			<div className="bg-gradient-to-r from-vi to-or py-20 h-screen">
 				<header></header>
 				<div>
 					<Routes>

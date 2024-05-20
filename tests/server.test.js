@@ -1,5 +1,5 @@
 const request = require("/supertest");
-const { app } = require("./server");
+const { app } = require("../server");
 
 describe("Server Routes", () => {
 	it("should respond to GET /start", async () => {

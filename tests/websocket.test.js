@@ -1,4 +1,4 @@
-const setupWebSocket = require("./websocket");
+const setupWebSocket = require("../websocket");
 
 describe("WebSocket Setup", () => {
 	const app = {};

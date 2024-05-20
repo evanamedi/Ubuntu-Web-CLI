@@ -22,7 +22,8 @@
 		"test": "craco test",
 		"eject": "react-scripts eject",
 		"tailwind": "tailwind -i src/styles.css -o src/index.css",
-		"watch:css": "nodemon -e js,jsx,css -x npm run tailwind"
+		"watch:css": "nodemon -e js,jsx,css -x npm run tailwind",
+		"build-output": "npm run build && mv build ../build"
 	},
 	"eslintConfig": {
 		"extends": [

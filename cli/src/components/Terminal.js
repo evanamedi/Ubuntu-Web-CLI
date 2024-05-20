@@ -3,8 +3,7 @@ import DockerTerminal from "./DockerManagement";
 
 export default function Terminal() {
 	return (
-		<div className="px-2 bg-black h-screen">
-			<h1 className="text-center text-4xl">Linux Terminal</h1>
+		<div className="px-2">
 			<DockerTerminal />
 		</div>
 	);

@@ -5,19 +5,9 @@ const passport = require("passport");
 const { clients, docker } = require("./utils/context.js");
 const path = require("path");
 const router = express.Router();
-const {
-	startContainer,
-	stopContainer,
-	restartContainer,
-	execCommand,
-} = require("./dockerService");
-const {
-	ensureAuthenticated,
-	ensureUnauthenticated,
-} = require("./middleware/auth.js");
+const { startContainer, stopContainer, restartContainer, execCommand } = require("./dockerService");
+const { ensureAuthenticated, ensureUnauthenticated } = require("./middleware/auth.js");
 
-// no longer serve old HTML files
-// redirect login and register routes to the react app
 router.get("/login", ensureUnauthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
@@ -60,31 +50,20 @@ router.post("/login", function (req, res, next) {
 	})(req, res, next);
 });
 
-// no longer serve old HTML files
 router.get("/index", ensureAuthenticated, (req, res) => {
 	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// redirect root to the React app
 router.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// route for starting a container
-router.get("/start", (req, res, next) =>
-	startContainer(clients, docker, req, res, next)
-);
-// route for stopping a container
-router.get("/stop", (req, res, next) =>
-	stopContainer(clients, docker, req, res, next)
-);
-// route for restarting a container
-router.get("/restart", (req, res, next) =>
-	restartContainer(clients, docker, req, res, next)
-);
-// route for executing a command in container
-router.post("/exec", (req, res, next) =>
-	execCommand(clients, docker, req, res, next)
-);
+router.get("/start", (req, res, next) => startContainer(clients, docker, req, res, next));
+
+router.get("/stop", (req, res, next) => stopContainer(clients, docker, req, res, next));
+
+router.get("/restart", (req, res, next) => restartContainer(clients, docker, req, res, next));
+
+router.post("/exec", (req, res, next) => execCommand(clients, docker, req, res, next));
 
 module.exports = router;

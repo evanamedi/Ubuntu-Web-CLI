@@ -43,15 +43,13 @@ const config = require("./utils/config.js");
 const path = require("path");
 const app = express();
 
-// connect to MongoDB using MONGO_URL from config
 mongoose.connect(config.MONGO_URI);
 
-app.use(cors()); // cors middleware
-app.use(express.json()); // JSON middleware
-app.use(cookieParser()); // cookie parsing middleware
-app.use(express.urlencoded({ extended: true })); // URL-encoding middleware
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
-// express session middleware
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
@@ -60,33 +58,25 @@ app.use(
 	})
 );
 
-// initialize and use passport for session management
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(routes); // use routes
-expressWs(app); // enable WebSocket support
+app.use(routes);
+expressWs(app);
 
-// serve static files from the React apps's build directory
 app.use(express.static(path.join(__dirname, "build")));
 
-// handle all GET requests by sending back the React app's index.html file
 app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-// setup websocket with app, uuidv4, clients, docker
 setupWebSocket(app, uuidv4, clients, docker);
 
-// define error handling middleware
 app.use((err, req, res, next) => {
-	console.error(err.stack); // log the error stack strace
-	res.status(500).send(`Error: ${err.message}`); // send error response
+	console.error(err.stack);
+	res.status(500).send(`Error: ${err.message}`);
 });
 
-// start express server
-app.listen(PORT, () =>
-	console.log(`Server is running at http://localhost:${PORT}`)
-);
+app.listen(PORT, () => console.log(`Server is running at http://localhost:${PORT}`));
 
 module.exports = { app, uuidv4, clients, docker };

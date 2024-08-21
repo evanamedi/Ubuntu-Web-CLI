@@ -1,77 +1,52 @@
-# Ubuntu-Web-Terminal
+# CLI WebSocket Docker Management Application
 
-This repository contains an Express.js server setup with WebSocket support, user authentication, session management, and static file serving for a React application.
+## Overview
+
+This project is a web-based CLI management system that allows users to start, stop, and manage Docker containers via WebSocket connections. The application is built using Node.js and Express, with MongoDB as the database for user authentication and session management. Key features include user authentication, secure communication, rate limiting, and input validation to ensure a safe and efficient environment for managing Docker containers.
+
+![Register](/images/register.png)
+![Login](/images/login.png)
+![Start](/images/start.png)
+![Use](/images/use.png)
 
 ## Features
 
--   **Express Server**: Provides the foundation for handling HTTP requests.
--   **WebSocket Support**: Enables real-time communication using WebSockets.
--   **Authentication**: Integrates Passport.js for handling user authentication.
--   **Session Management**: Utilizes Express Session for managing user sessions.
--   **MongoDB Connection**: Connects to a MongoDB database using Mongoose.
--   **CORS**: Supports Cross-Origin Resource Sharing.
--   **Static File Serving**: Serves static files from a React app's build directory.
--   **Error Handling**: Middleware for logging errors and sending error responses.
+-   **User Authentication:** Users can register and log in using secure password hashing with bcrypt. Authentication is handled via Passport.js using the local strategy.
+-   **Docker Container Management:** Users can start, stop, restart, and execute commands in Docker containers via WebSocket connections.
+-   **WebSocket Integration:** Real-time communication with Docker containers is facilitated through WebSockets, allowing for immediate feedback from container operations.
+-   **Security Enhancements:** The application includes various security measures such as XSS protection, rate limiting, input validation, and secure password handling.
+-   **Session Management:** User sessions are managed using `express-session` with secure cookies.
+-   **Logging:** Application actions and errors are logged with timestamps for easy tracking and debugging.
+-   **Error Handling:** Robust error handling mechanisms are in place to capture and manage unexpected issues.
 
-## Setup and Usage
+## Technologies Used
 
-### Prerequisites
+-   **Node.js**
+-   **Express.js**
+-   **MongoDB**
+-   **Docker**
+-   **WebSocket**
+-   **Passport.js**
+-   **bcrypt**
+-   **uuid**
 
--   Node.js
--   MongoDB
--   Environment variables: `SESSION_SECRET`, `MONGO_URI`, and `PORT`.
+## Usage
 
-### Installation
+-   **Register and Login:**
 
-1. Clone the repository:
-    ```bash
-    git clone <repository-url>
-    ```
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-3. Set up environment variables in a `.env` file:
-    ```
-    SESSION_SECRET=your_session_secret
-    MONGO_URI=your_mongo_uri
-    PORT=your_port
-    ```
+    -   Visit `/register` to create a new account.
+    -   Visit `/login` to log in with an existing account.
 
-### Running the Server
+-   **Docker Container Management:**
+    -   After logging in, users can start, stop, restart, and execute commands in Docker containers via the web interface.
 
-1. Start the MongoDB server.
-2. Start the Express server:
-    ```bash
-    npm start
-    ```
+## Security Considerations
 
-The server will be running at `http://localhost:<PORT>`.
+-   **XSS Protection:** Input validation and secure handling of WebSocket messages help prevent cross-site scripting attacks.
+-   **Password Security:** User passwords are hashed with bcrypt before storing in the database.
+-   **Session Security:** Sessions are secured with `express-session` and encrypted cookies.
 
-## Code Overview
+## Logging and Error Handling
 
--   **Server Setup**: The main server setup is in the `server.js` file.
--   **WebSocket Configuration**: WebSocket setup is handled in the `websocket.js` file.
--   **Routes and Middleware**: Routes are imported from the `routes` directory and middleware is configured for sessions, cookies, and authentication.
--   **Static Files**: The server is configured to serve static files from the React app's build directory.
-
-### Key Files
-
--   `server.js`: Main server configuration.
--   `websocket.js`: WebSocket setup function.
--   `routes/`: Directory containing route definitions.
--   `middleware/auth.js`: Authentication middleware.
--   `config.js`: Configuration file for environment variables.
--   `context.js`: Context setup for shared resources like clients and Docker.
-
-### Error Handling
-
-The server includes error handling middleware to log errors and respond with a message.
-
-## Contribution
-
-Feel free to fork the repository and make pull requests. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the MIT License.
+-   The application includes detailed logging of actions and errors to help in debugging and monitoring the application.
+-   Errors are handled gracefully, with responses sent to the client and logs recorded on the server.

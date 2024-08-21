@@ -3,7 +3,6 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 
-// passport local strategy for local-login
 passport.use(
 	"local",
 	new LocalStrategy(async (username, password, done) => {
@@ -28,12 +27,10 @@ passport.use(
 	})
 );
 
-// serialize user
 passport.serializeUser((user, done) => {
 	done(null, user.id);
 });
 
-// deserialize user
 passport.deserializeUser(async (id, done) => {
 	try {
 		const user = await User.findById(id);
@@ -43,7 +40,6 @@ passport.deserializeUser(async (id, done) => {
 	}
 });
 
-// middleware to ensure user is authenticated
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
@@ -51,7 +47,6 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect("/login");
 }
 
-// middleware to ensure user is unauthenticated
 function ensureUnauthenticated(req, res, next) {
 	if (!req.isAuthenticated()) {
 		return next();
